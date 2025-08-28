@@ -1,15 +1,8 @@
 import { prisma } from "../../prisma";
-import { CriarEstoqueDTO } from "./criarEstoque.dto";
 import { AtualizarEstoqueDTO } from "./atualizarEstoque.dto";
 
 export class EstoqueService {
-  async criarEstoque(data: CriarEstoqueDTO) {
-    return prisma.estoque.create({
-      data,
-    });
-  }
-
-  async listarEstoques() {
+   async listarEstoques() {
     return prisma.estoque.findMany();
   }
 
@@ -26,9 +19,4 @@ export class EstoqueService {
     });
   }
 
-  async deletarEstoque(id: string) {
-    return prisma.estoque.delete({
-      where: { id },
-    });
-  }
 }
