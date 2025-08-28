@@ -8,11 +8,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Cliente {
   id        String   @id @default(uuid())
-  name      String
+  nome      String
   email     String   @unique
-  password  String
+  telefone  String?  @unique
+  vendas    Venda[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Produto {
+  id        String   @id @default(uuid())
+  nome      String   @unique
+  descricao String?
+  preco     Float
+  estoque   Estoque?
+  pedidos   Pedido[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Estoque {
+  id         String   @id @default(uuid())
+  quantidade Int
+  produto    Produto  @relation(fields: [produtoId], references: [id])
+  produtoId  String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum StatusVenda {
+  PENDENTE
+  PAGO
+  CANCELADO
+}
+
+model Venda {
+  id        String      @id @default(uuid())
+  cliente   Cliente     @relation(fields: [clienteId], references: [id])
+  clienteId String
+  pedidos   Pedido[]
+  total     Float       @default(0)
+  status    StatusVenda @default(PENDENTE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Pedido {
+  id            String   @id @default(uuid())
+  venda         Venda    @relation(fields: [vendaId], references: [id])
+  vendaId       String
+  produto       Produto  @relation(fields: [produtoId], references: [id])
+  produtoId     String
+  quantidade    Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
