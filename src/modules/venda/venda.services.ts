@@ -7,13 +7,11 @@ export class VendaService {
     return prisma.venda.create({
       data: {
         cliente: { connect: { id: data.clienteId } },
-        produto: { connect: { id: data.produtoId } },
-        quantidade: data.quantidade,
-        status: data.status,
+        ...(data.status !== undefined && { status: data.status }),
       },
       include: {
         cliente: true,
-        produto: true,
+        pedidos: { include: { produto: true } },
       },
     });
   }
@@ -22,7 +20,7 @@ export class VendaService {
     return prisma.venda.findMany({
       include: {
         cliente: true,
-        produto: true,
+        pedidos: { include: { produto: true } },
       },
     });
   }
@@ -32,7 +30,7 @@ export class VendaService {
       where: { id },
       include: {
         cliente: true,
-        produto: true,
+        pedidos: { include: { produto: true } },
       },
     });
   }
@@ -43,7 +41,7 @@ export class VendaService {
       data,
       include: {
         cliente: true,
-        produto: true,
+        pedidos: { include: { produto: true } },
       },
     });
   }
@@ -53,7 +51,7 @@ export class VendaService {
       where: { id },
       include: {
         cliente: true,
-        produto: true,
+        pedidos: { include: { produto: true } },
       },
     });
   }
