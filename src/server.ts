@@ -2,15 +2,19 @@ import app from './app';
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
+
+// ADICIONE TRATAMENTO DE ERRO GLOBAL
+process.on('uncaughtException', (err) => {
+  console.error('💥 Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 console.log('🚀 Iniciando servidor...');
 console.log('📍 Porta:', PORT);
 console.log('🌍 Ambiente:', process.env.NODE_ENV);
-
-console.log('🔍 Debug das variáveis:');
-console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'EXISTE' : 'NÃO EXISTE');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('PORT:', process.env.PORT);
-console.log('Total de variáveis:', Object.keys(process.env).length);
 
 app.get('/health', (req, res) => {
   console.log('📥 Health check acessado');
@@ -23,14 +27,18 @@ app.get('/health', (req, res) => {
 
 app.get('/', (req, res) => {
   console.log('📥 Rota / acessada');
-  res.json({ 
-    message: 'API rodando!',
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    port: PORT,
-    databaseConfigured: !!process.env.DATABASE_URL
-  });
+  try {
+    res.json({ 
+      message: 'API rodando!',
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      port: PORT
+    });
+  } catch (error) {
+    console.error('❌ Erro na rota /:', error);
+    res.status(500).json({ error: 'Erro interno' });
+  }
 });
 
 app.listen(PORT, '0.0.0.0', () => {
