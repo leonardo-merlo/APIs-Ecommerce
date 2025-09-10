@@ -28,4 +28,15 @@ if (!process.env.DATABASE_URL) {
   }
 }
 
+(async () => {
+  try {
+    await prisma.$connect();
+    console.log('✅ Conectado ao banco com sucesso!');
+    const tables = await prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public';`;
+    console.log('📋 Tabelas existentes no banco:', tables);
+  } catch (err) {
+    console.error('❌ Erro ao conectar ou buscar tabelas:', err);
+  }
+})();
+
 export { prisma };
