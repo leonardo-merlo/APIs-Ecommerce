@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { StatusVenda } from "../../generated/prisma";
+import { StatusVenda } from '@prisma/client';
 
 export const criarVendaSchema = z.object({
   clienteId: z.string(),
