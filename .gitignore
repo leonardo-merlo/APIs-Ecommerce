@@ -1,7 +1,6 @@
 # Node.js
 node_modules
 dist
-.env
 
 # Logs
 npm-debug.log*
@@ -17,3 +16,7 @@ prisma/dev.db-journal
 .DS_Store
 
 /src/generated/prisma
+
+# Ignora logs e builds temporários
+*.log
+frontend/build/  // Se o frontend gerar uma pasta build
