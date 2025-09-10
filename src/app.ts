@@ -3,12 +3,13 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { routes } from "./routes";
 
-dotenv.config();
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config();
+}
 
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
 app.use(routes);
 
