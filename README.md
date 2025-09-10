@@ -1,119 +1,100 @@
-# E-commerce API System
+# E-commerce Backend API
 
-Sistema completo de APIs para e-commerce com backend em Node.js/Express e frontend em React, gerenciando clientes, produtos, estoque, pedidos e vendas.
+Sistema robusto de APIs REST para e-commerce desenvolvido em Node.js/Express com TypeScript, gerenciando clientes, produtos, estoque, pedidos e vendas com validações completas e relacionamentos entre entidades.
 
-## 🚀 Tecnologias
+## 🚀 Tecnologias Principais
 
-### Backend
-- **Node.js** com **Express.js** - Framework web
-- **TypeScript** - Tipagem estática
-- **Prisma** - ORM e gerenciamento de banco de dados
+- **Node.js** com **Express.js** - Framework web robusto
+- **TypeScript** - Tipagem estática para maior confiabilidade
+- **Prisma ORM** - Gerenciamento moderno de banco de dados
 - **PostgreSQL** - Banco de dados relacional
-- **Zod** - Validação de schemas
-- **CORS** - Cross-origin resource sharing
+- **Zod** - Validação rigorosa de schemas
+- **Railway** - Deploy em produção
 
-### Frontend
-- **React 19** com **TypeScript**
-- **Vite** - Build tool e dev server
-- **React Router** - Roteamento
-- **Axios** - Cliente HTTP
+## 📋 APIs Disponíveis
 
-## 📋 Funcionalidades
+### 🧑‍💼 **Clientes** (`/clientes`)
+- **POST** `/clientes` - Criar cliente (nome, email, telefone)
+- **GET** `/clientes` - Listar todos os clientes
+- **GET** `/clientes/:id` - Buscar cliente específico
+- **PUT** `/clientes/:id` - Atualizar dados do cliente  
+- **DELETE** `/clientes/:id` - Remover cliente
 
-### 🔧 Backend APIs
+### 📦 **Produtos** (`/produtos`)
+- **POST** `/produtos` - Criar produto (nome, descrição, preço, estoque inicial)
+- **GET** `/produtos` - Listar todos os produtos
+- **GET** `/produtos/:id` - Buscar produto específico
+- **PUT** `/produtos/:id` - Atualizar produto (exceto estoque)
+- **DELETE** `/produtos/:id` - Remover produto
 
-#### **Clientes** (`/clientes`)
-- ✅ **POST** `/clientes` - Criar cliente (nome, email, telefone)
-- ✅ **GET** `/clientes` - Listar todos os clientes
-- ✅ **GET** `/clientes/:id` - Buscar cliente por ID
-- ✅ **PUT** `/clientes/:id` - Atualizar cliente
-- ✅ **DELETE** `/clientes/:id` - Deletar cliente
+### 📊 **Estoque** (`/estoques`)
+- **GET** `/estoques` - Listar todos os itens de estoque
+- **GET** `/estoques/:id` - Consultar estoque específico
+- **PUT** `/estoques/:id` - Atualizar quantidade em estoque
 
-#### **Produtos** (`/produtos`)
-- ✅ **POST** `/produtos` - Criar produto (nome, descrição, preço, estoque)
-- ✅ **GET** `/produtos` - Listar todos os produtos
-- ✅ **GET** `/produtos/:id` - Buscar produto por ID
-- ✅ **PUT** `/produtos/:id` - Atualizar produto (exceto estoque)
-- ✅ **DELETE** `/produtos/:id` - Deletar produto
+### 📋 **Pedidos** (`/pedidos`)
+- **POST** `/pedidos` - Criar pedido (vendaId, produtoId, quantidade)
+- **GET** `/pedidos` - Listar todos os pedidos com detalhes
+- **GET** `/pedidos/:id` - Buscar pedido específico
+- **PUT** `/pedidos/:id` - Atualizar quantidade do pedido
+- **DELETE** `/pedidos/:id` - Cancelar pedido
 
-#### **Estoque** (`/estoques`)
-- ✅ **GET** `/estoques` - Listar todos os itens de estoque
-- ✅ **GET** `/estoques/:id` - Buscar estoque por ID
-- ✅ **PUT** `/estoques/:id` - Atualizar quantidade em estoque
+### 💰 **Vendas** (`/vendas`)
+- **POST** `/vendas` - Criar nova venda (clienteId, status)
+- **GET** `/vendas` - Listar todas as vendas com relacionamentos
+- **GET** `/vendas/:id` - Buscar venda específica com pedidos
+- **PUT** `/vendas/:id` - Atualizar status da venda
+- **DELETE** `/vendas/:id` - Cancelar venda completa
 
-#### **Pedidos** (`/pedidos`)
-- ✅ **POST** `/pedidos` - Criar pedido (vendaId, produtoId, quantidade)
-- ✅ **GET** `/pedidos` - Listar todos os pedidos
-- ✅ **GET** `/pedidos/:id` - Buscar pedido por ID
-- ✅ **PUT** `/pedidos/:id` - Atualizar quantidade do pedido
-- ✅ **DELETE** `/pedidos/:id` - Deletar pedido
-
-#### **Vendas** (`/vendas`)
-- ✅ **POST** `/vendas` - Criar venda (clienteId, status)
-- ✅ **GET** `/vendas` - Listar todas as vendas
-- ✅ **GET** `/vendas/:id` - Buscar venda por ID
-- ✅ **PUT** `/vendas/:id` - Atualizar status da venda
-- ✅ **DELETE** `/vendas/:id` - Deletar venda
-
-### 🎨 Frontend
-
-Interface web responsiva para testar todas as APIs:
-
-- **Páginas CRUD** para cada módulo (Clientes, Produtos, Estoque, Pedidos, Vendas)
-- **Formulários** para criação e edição
-- **Listagem** com informações relacionadas (nomes de clientes/produtos)
-- **Navegação** intuitiva entre módulos
-- **Design moderno** com gradiente e interface limpa
-
-## 🗄️ Modelo de Dados
+## 🗄️ Arquitetura do Banco de Dados
 
 ```mermaid
 erDiagram
-    Cliente ||--o{ Venda : "tem"
+    Cliente ||--o{ Venda : "realiza"
     Venda ||--o{ Pedido : "contém"
-    Produto ||--o{ Pedido : "está em"
-    Produto ||--|| Estoque : "tem"
+    Produto ||--o{ Pedido : "compõe"
+    Produto ||--|| Estoque : "possui"
     
     Cliente {
-        string id PK
-        string nome
-        string email UK
-        string telefone UK
+        string id PK "UUID"
+        string nome "Obrigatório"
+        string email UK "Único"
+        string telefone UK "Único"
         datetime createdAt
         datetime updatedAt
     }
     
     Produto {
-        string id PK
-        string nome UK
+        string id PK "UUID"
+        string nome UK "Único"
         string descricao
-        float preco
+        decimal preco "Positivo"
         datetime createdAt
         datetime updatedAt
     }
     
     Estoque {
-        string id PK
-        int quantidade
-        string produtoId FK
+        string id PK "UUID"
+        int quantidade "Não negativa"
+        string produtoId FK "Referência única"
         datetime createdAt
         datetime updatedAt
     }
     
     Venda {
-        string id PK
+        string id PK "UUID"
         string clienteId FK
-        float total
-        enum status
+        decimal total "Calculado automaticamente"
+        enum status "PENDENTE | PAGO | CANCELADO"
         datetime createdAt
         datetime updatedAt
     }
     
     Pedido {
-        string id PK
+        string id PK "UUID"
         string vendaId FK
         string produtoId FK
-        int quantidade
+        int quantidade "Positiva"
         datetime createdAt
         datetime updatedAt
     }
@@ -122,16 +103,16 @@ erDiagram
 ## 🛠️ Instalação e Configuração
 
 ### Pré-requisitos
-- Node.js 18+
-- PostgreSQL
-- npm ou yarn
+- **Node.js 18+**
+- **PostgreSQL 12+**
+- **npm** ou **yarn**
 
-### Backend
+### Setup Local
 
 1. **Clone o repositório**
 ```bash
-git clone <repository-url>
-cd ecommerce-apis
+git clone <seu-repositorio>
+cd ecommerce-backend-api
 ```
 
 2. **Instale as dependências**
@@ -139,77 +120,68 @@ cd ecommerce-apis
 npm install
 ```
 
-3. **Configure o banco de dados**
+3. **Configure as variáveis de ambiente**
 ```bash
-# Crie um arquivo .env na raiz do projeto
+# Crie .env na raiz do projeto
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/ecommerce_db"
+PORT=3000
+NODE_ENV=development
 ```
 
-4. **Execute as migrações**
+4. **Prepare o banco de dados**
 ```bash
+# Execute as migrações
 npx prisma migrate dev
+
+# (Opcional) Visualize o banco
+npx prisma studio
 ```
 
 5. **Inicie o servidor**
 ```bash
+# Desenvolvimento
 npm run dev
+
+# Produção
+npm start
 ```
 
-O servidor estará rodando em `http://localhost:3000`
+### Deploy no Railway
 
-### Frontend
+1. **Conecte ao Railway**
+2. **Configure a variável DATABASE_URL** (PostgreSQL automático)
+3. **Deploy automático** via Git
 
-1. **Navegue para a pasta frontend**
+## 📡 Exemplos de Uso
+
+### Fluxo Completo de Venda
+
+#### 1. Criar Cliente
 ```bash
-cd frontend
-```
-
-2. **Instale as dependências**
-```bash
-npm install
-```
-
-3. **Configure a URL da API (opcional)**
-```bash
-# Crie um arquivo .env na pasta frontend
-VITE_API_URL=http://localhost:3000
-```
-
-4. **Inicie o servidor de desenvolvimento**
-```bash
-npm run dev
-```
-
-O frontend estará rodando em `http://localhost:5173`
-
-## 📡 Exemplos de Uso das APIs
-
-### Criar Cliente
-```bash
-curl -X POST http://localhost:3000/clientes \
+curl -X POST https://sua-api.railway.app/clientes \
   -H "Content-Type: application/json" \
   -d '{
     "nome": "João Silva",
-    "email": "joao@email.com",
+    "email": "joao@email.com", 
     "telefone": "11999999999"
   }'
 ```
 
-### Criar Produto
+#### 2. Criar Produto com Estoque
 ```bash
-curl -X POST http://localhost:3000/produtos \
+curl -X POST https://sua-api.railway.app/produtos \
   -H "Content-Type: application/json" \
   -d '{
-    "nome": "Smartphone",
-    "descricao": "Smartphone Android",
-    "preco": 999.99,
+    "nome": "Smartphone Galaxy",
+    "descricao": "Smartphone Android 128GB",
+    "preco": 1299.90,
     "estoque": 50
   }'
 ```
 
-### Criar Venda
+#### 3. Criar Venda
 ```bash
-curl -X POST http://localhost:3000/vendas \
+curl -X POST https://sua-api.railway.app/vendas \
   -H "Content-Type: application/json" \
   -d '{
     "clienteId": "uuid-do-cliente",
@@ -217,9 +189,9 @@ curl -X POST http://localhost:3000/vendas \
   }'
 ```
 
-### Criar Pedido
+#### 4. Adicionar Pedido à Venda
 ```bash
-curl -X POST http://localhost:3000/pedidos \
+curl -X POST https://sua-api.railway.app/pedidos \
   -H "Content-Type: application/json" \
   -d '{
     "vendaId": "uuid-da-venda",
@@ -228,68 +200,89 @@ curl -X POST http://localhost:3000/pedidos \
   }'
 ```
 
-## 🔧 Scripts Disponíveis
-
-### Backend
-- `npm run dev` - Inicia o servidor em modo desenvolvimento
-- `npx prisma studio` - Interface visual do banco de dados
-- `npx prisma migrate dev` - Executa migrações
-- `npx prisma generate` - Gera o cliente Prisma
-
-### Frontend
-- `npm run dev` - Servidor de desenvolvimento
-- `npm run build` - Build para produção
-- `npm run preview` - Preview do build
-
-## 🏗️ Arquitetura
+## 🏗️ Estrutura do Projeto
 
 ```
 src/
-├── modules/
+├── modules/                 # Módulos principais
 │   ├── cliente/
-│   │   ├── cliente.controllers.ts
-│   │   ├── cliente.routes.ts
-│   │   ├── cliente.services.ts
-│   │   ├── criarCliente.dto.ts
-│   │   └── atualizarCliente.dto.ts
-│   ├── produto/
-│   ├── estoque/
-│   ├── pedido/
-│   └── venda/
+│   │   ├── cliente.controllers.ts  # Lógica dos endpoints
+│   │   ├── cliente.routes.ts       # Definição das rotas
+│   │   ├── cliente.services.ts     # Regras de negócio
+│   │   ├── criarCliente.dto.ts     # Validação criação
+│   │   └── atualizarCliente.dto.ts # Validação atualização
+│   ├── produto/             # Mesmo padrão para produtos
+│   ├── estoque/             # Gerenciamento de estoque
+│   ├── pedido/              # Itens de venda
+│   └── venda/               # Transações principais
 ├── routes/
-│   └── index.ts
-├── app.ts
-└── server.ts
+│   └── index.ts             # Agregador de rotas
+├── prisma.ts                # Cliente Prisma
+├── app.ts                   # Configuração Express
+└── server.ts                # Servidor HTTP
 ```
 
-## 🚦 Status das APIs
+## 🔒 Validações Implementadas
 
-| Módulo | CRUD | Validação | Relacionamentos | Status |
+### Regras de Negócio
+- **Clientes**: Email e telefone únicos, nome obrigatório
+- **Produtos**: Nome único, preço sempre positivo
+- **Estoque**: Quantidade nunca negativa, um estoque por produto
+- **Pedidos**: Quantidade positiva, validação de relacionamentos
+- **Vendas**: Status controlado (PENDENTE → PAGO → CANCELADO)
+
+### Validação com Zod
+```typescript
+// Exemplo: Schema de criação de produto
+const criarProdutoSchema = z.object({
+  nome: z.string().min(1, "Nome é obrigatório"),
+  descricao: z.string().optional(),
+  preco: z.number().positive("Preço deve ser positivo"),
+  estoque: z.number().int().min(0, "Estoque não pode ser negativo")
+});
+```
+
+## 🚦 Status das Funcionalidades
+
+| Módulo | CRUD | Validação | Relacionamentos | Testes |
 |--------|------|-----------|-----------------|--------|
-| Clientes | ✅ | ✅ | ✅ | Completo |
-| Produtos | ✅ | ✅ | ✅ | Completo |
-| Estoque | ✅ | ✅ | ✅ | Completo |
-| Pedidos | ✅ | ✅ | ✅ | Completo |
-| Vendas | ✅ | ✅ | ✅ | Completo |
+| ✅ Clientes | Completo | Zod + Prisma | N:1 com Vendas | Manual |
+| ✅ Produtos | Completo | Zod + Prisma | 1:1 Estoque, N:M Pedidos | Manual |
+| ✅ Estoque | Leitura/Update | Zod + Prisma | 1:1 com Produtos | Manual |
+| ✅ Pedidos | Completo | Zod + Prisma | N:1 Venda/Produto | Manual |
+| ✅ Vendas | Completo | Zod + Prisma | 1:N Pedidos, N:1 Cliente | Manual |
 
-## 📝 Validações
+## 📊 Recursos Avançados
 
-- **Clientes**: Nome obrigatório, email único, telefone único
-- **Produtos**: Nome único, preço positivo
-- **Estoque**: Quantidade não negativa
-- **Pedidos**: Quantidade positiva, referências válidas
-- **Vendas**: Status enum (PENDENTE, PAGO, CANCELADO)
+### Relacionamentos Automáticos
+- **GET** `/vendas/:id` - Retorna venda com pedidos e detalhes dos produtos
+- **GET** `/pedidos` - Lista pedidos com nome do cliente e produto
+- Cálculo automático do total das vendas
 
-## 🔒 CORS
+### Tratamento de Erros
+- Validação de entrada com Zod
+- Erros de relacionamento (FK constraints)
+- Respostas HTTP padronizadas
+- Logs detalhados para debug
 
-O sistema está configurado para aceitar requisições do frontend em:
-- `http://localhost:5173`
-- `http://127.0.0.1:5173`
+### Performance
+- Queries otimizadas com Prisma
+- Índices no banco para consultas rápidas  
+- Conexão pooling automática
 
-## 📄 Licença
+## 🔧 Scripts & URLs
 
-ISC License
+```bash
+npm run dev          # Desenvolvimento  
+npx prisma studio    # DB visual
+npx prisma migrate dev # Migrações
+```
+
+**URLs:**
+- Local: `http://localhost:3000`  
+- Produção: `https://app.railway.app`
+- Health: `/health` | Info: `/`
 
 ---
 
-**Desenvolvido com ❤️ usando Node.js, Express, Prisma e React**
+**🚀 APIs completas para e-commerce | Node.js + TypeScript + Prisma + Railway**
