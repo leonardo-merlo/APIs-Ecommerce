@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
+    "strict": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitAny": false,
     "target": "ES2021",
-    "module": "CommonJS",
+    "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": false,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "types": ["node"]
+    "skipLibCheck": true
   },
   "include": ["src"]
 }
