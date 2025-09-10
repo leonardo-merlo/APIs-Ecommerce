@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
+console.log('🔍 DEBUG DATABASE_URL:', process.env.DATABASE_URL ? 'EXISTE' : 'NÃO EXISTE');
+console.log('🔍 DATABASE_URL length:', process.env.DATABASE_URL?.length || 0);
+
 let prisma: PrismaClient;
 
 try {
